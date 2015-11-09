@@ -90,8 +90,8 @@ ifneq ($(INFORMATION_MESSAGE), )
 endif
 	${MAKE}  -f nbproject/Makefile-default.mk dist/${CND_CONF}/${IMAGE_TYPE}/test3.X.${IMAGE_TYPE}.${OUTPUT_SUFFIX}
 	@echo "--------------------------------------"
-	@echo "User defined post-build step: [C:\Users\zacaj\Documents\pic\STM32F3-PIC32\b2h.exe ${ImagePath} C:\Users\zacaj\Documents\pic\STM32F3-PIC32\src\hex.c HEX]"
-	@C:\Users\zacaj\Documents\pic\STM32F3-PIC32\b2h.exe ${ImagePath} C:\Users\zacaj\Documents\pic\STM32F3-PIC32\src\hex.c HEX
+	@echo "User defined post-build step: [C:\Users\zacaj\Documents\pic\STM32F3-PIC32\b2h.exe ${ImagePath} C:\Users\zacaj\Documents\pic\STM32F3-PIC32\src\hex.h HEX]"
+	@C:\Users\zacaj\Documents\pic\STM32F3-PIC32\b2h.exe ${ImagePath} C:\Users\zacaj\Documents\pic\STM32F3-PIC32\src\hex.h HEX
 	@echo "--------------------------------------"
 
 MP_PROCESSOR_OPTION=32MX110F016B

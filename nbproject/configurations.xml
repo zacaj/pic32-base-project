@@ -50,7 +50,7 @@
         <makeCustomizationPreStepEnabled>false</makeCustomizationPreStepEnabled>
         <makeCustomizationPreStep></makeCustomizationPreStep>
         <makeCustomizationPostStepEnabled>true</makeCustomizationPostStepEnabled>
-        <makeCustomizationPostStep>C:\Users\zacaj\Documents\pic\STM32F3-PIC32\b2h.exe ${ImagePath} C:\Users\zacaj\Documents\pic\STM32F3-PIC32\src\hex.c HEX</makeCustomizationPostStep>
+        <makeCustomizationPostStep>C:\Users\zacaj\Documents\pic\STM32F3-PIC32\b2h.exe ${ImagePath} C:\Users\zacaj\Documents\pic\STM32F3-PIC32\src\hex.h HEX</makeCustomizationPostStep>
         <makeCustomizationPutChecksumInUserID>false</makeCustomizationPutChecksumInUserID>
         <makeCustomizationEnableLongLines>false</makeCustomizationEnableLongLines>
         <makeCustomizationNormalizeHexFile>false</makeCustomizationNormalizeHexFile>

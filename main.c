@@ -1,24 +1,35 @@
 #define _SUPPRESS_PLIB_WARNING
 #include <plib.h>
+#include <stdint.h>
 
-// Configuration Bit settings
-// SYSCLK = 80 MHz (8MHz Crystal/ FPLLIDIV * FPLLMUL / FPLLODIV)
-// PBCLK = 40 MHz
-// Primary Osc w/PLL (XT+,HS+,EC+PLL)
-// WDT OFF
-// Other options are don't care
-//
-#pragma config FPLLMUL = MUL_20, FPLLIDIV = DIV_2, FPLLODIV = DIV_1, FWDTEN = OFF
-#pragma config POSCMOD = HS, FNOSC = PRIPLL, FPBDIV = DIV_1
+#define Ob(x)  ((unsigned)Ob_(0 ## x ## uL))
+#define Ob_(x) (x & 1 | x >> 2 & 2 | x >> 4 & 4 | x >> 6 & 8 |		\
+	x >> 8 & 16 | x >> 10 & 32 | x >> 12 & 64 | x >> 14 & 128)
 
+// DEVCFG2
+#pragma config FPLLIDIV = DIV_4         // PLL Input Divider (4x Divider)
+#pragma config FPLLMUL = MUL_20         // PLL Multiplier (20x Multiplier)
+#pragma config FPLLODIV = DIV_1         // System PLL Output Clock Divider (PLL Divide by 1)
 
+// DEVCFG1
+#pragma config FNOSC = FRC              // Oscillator Selection Bits (Fast RC Osc (FRC))
+#pragma config FSOSCEN = ON             // Secondary Oscillator Enable (Enabled)
+#pragma config IESO = ON                // Internal/External Switch Over (Enabled)
+#pragma config POSCMOD = HS             // Primary Oscillator Configuration (HS osc mode)
+#pragma config OSCIOFNC = OFF           // CLKO Output Signal Active on the OSCO Pin (Disabled)
+#pragma config FPBDIV = DIV_1           // Peripheral Clock Divisor (Pb_Clk is Sys_Clk/1)
+#pragma config FCKSM = CSDCMD           // Clock Switching and Monitor Selection (Clock Switch Disable, FSCM Disabled)
 
-#define CONFIG          (CN_ON | CN_IDLE_CON)
-#define PINS            (CN15_ENABLE)
-#define PULLUPS         (CN15_PULLUP_ENABLE)
-#define INTERRUPT       (CHANGE_INT_ON | CHANGE_INT_PRI_2)
+typedef struct {
+    IoPortId port;
+    uint32_t pin;
+} Pin;
+
 #define SYS_FREQ         (40000000L)
 
+#define msElapsed ((ReadCoreTimer()/4000))
+
+uint32_t lastChange=0;
 
 int main(void)
 {
@@ -29,17 +40,33 @@ int main(void)
     // wait state and enable prefetch cache but will not change the PBDIV.
     // The PBDIV value is already set via the pragma FPBDIV option above..
     SYSTEMConfig(SYS_FREQ, SYS_CFG_WAIT_STATES | SYS_CFG_PCACHE);
+    
+    /*INTConfigureSystem(INT_SYSTEM_CONFIG_MULT_VECTOR);
+    INTEnableInterrupts();
 
+    OpenCoreTimer(2000);
+    mConfigIntCoreTimer(CT_INT_ON | CT_INT_PRIOR_5 | CT_INT_SUB_PRIOR_1);
+    mEnableIntCoreTimer();*/
 
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    // STEP 2. configure the port registers
     PORTSetPinsDigitalOut(IOPORT_A, 31);
     PORTClearBits(IOPORT_A, 31);
-    for(int i=0; i<6; i+2)
-        PORTWrite(IOPORT_A, 1<<i);
     PORTSetPinsDigitalOut(IOPORT_B, 65535);
     PORTClearBits(IOPORT_B, 65535);
-    for(int i=0; i<16; i+2)
-        PORTWrite(IOPORT_B, 1<<i);
+    PORTSetBits(IOPORT_A, BIT_1);
+    
+    while(1) {
+        if(msElapsed-lastChange>1000) {
+            PORTToggleBits(IOPORT_B, BIT_13);
+            PORTToggleBits(IOPORT_A, BIT_1);
+            lastChange=msElapsed;
+        }
+    }
 
 }
+/*
+void __ISR(_CORE_TIMER_VECTOR, IPL5SOFT) CoreTimerInterruptServiceRoutine(void);
+void CoreTimerInterruptServiceRoutine() {
+    msElapsed++;
+    INTClearFlag(INT_CT);
+    UpdateCoreTimer(40000);
+}*/
