@@ -14,7 +14,7 @@
 // DEVCFG2
 #pragma config FPLLIDIV = DIV_1         // PLL Input Divider (1x Divider)
 #pragma config FPLLMUL = MUL_20         // PLL Multiplier (20x Multiplier)
-#pragma config FPLLODIV = DIV_2         // System PLL Output Clock Divider (PLL Divide by 2)
+#pragma config FPLLODIV = DIV_1         // System PLL Output Clock Divider (PLL Divide by 2)
 
 // DEVCFG1
 #pragma config FNOSC = FRCPLL           // Oscillator Selection Bits (Fast RC Osc with PLL)
