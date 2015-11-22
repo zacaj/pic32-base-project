@@ -19,9 +19,13 @@
                    projectFiles="false">
       <itemPath>Makefile</itemPath>
     </logicalFolder>
-    <itemPath>common.h</itemPath>
-    <itemPath>timer.h</itemPath>
+    <itemPath>common.c</itemPath>
+    <itemPath>sat.c</itemPath>
+    <itemPath>timer.c</itemPath>
   </logicalFolder>
+  <sourceRootList>
+    <Elem>.</Elem>
+  </sourceRootList>
   <projectmakefile>Makefile</projectmakefile>
   <confs>
     <conf name="default" type="2">

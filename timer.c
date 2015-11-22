@@ -3,7 +3,7 @@
 
 uint32_t (*callbacks[5])(void*);
 uint32_t ticksLeft[5];
-void *data[5];
+void *timerData[5];
 
 void initTimers() {
     ConfigIntTimer1(T1_INT_PRIOR_2);
@@ -22,7 +22,7 @@ void timerTick(int i) {
     
     ticksLeft[i]--;
     if(ticksLeft[i]==0) {
-        ticksLeft[i] = callbacks[i](data[i]);
+        ticksLeft[i] = callbacks[i](timerData[i]);
         if(!ticksLeft[i]) {
             switch(i) {
                 case 0: CloseTimer1(); DisableIntT1; break;
@@ -49,7 +49,7 @@ uint8_t callIn(uint32_t (*func)(void*), void* d, uint32_t ms) {
         return 0;
     
     callbacks[i]=func;
-    data[i]=d;
+    timerData[i]=d;
     ticksLeft[i]=ms;
     
     switch(i) {

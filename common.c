@@ -1,8 +1,28 @@
-
-#ifndef COMMON_H
-#define	COMMON_H
 #define _SUPPRESS_PLIB_WARNING
-#include <plib.h>
+//#include <peripheral/adc10.h>
+//#include <peripheral/bmx.h>
+//#include <peripheral/cmp.h>
+//#include <peripheral/cvref.h>
+//#include <peripheral/dma.h>
+//#include <peripheral/i2c.h>
+//#include <peripheral/incap.h>
+#include <peripheral/int.h>
+//#include <peripheral/nvm.h>
+//#include <peripheral/outcompare.h>
+//#include <peripheral/pcache.h>
+//#include <peripheral/pmp.h>
+#include <peripheral/ports.h>
+#include <peripheral/pps.h>
+//#include <peripheral/power.h>
+//#include <peripheral/reset.h>
+//#include <peripheral/rtcc.h>
+#include <peripheral/spi.h>
+#include <peripheral/system.h>
+#include <peripheral/timer.h>
+//#include <peripheral/uart.h>
+//#include <peripheral/wdt.h>
+//#include <peripheral/eth.h>
+//#include <peripheral/CAN.h>
 #include <stdint.h>
 
 #define Ob(x)  ((unsigned)Ob_(0 ## x ## uL))
@@ -39,6 +59,26 @@
 #pragma config BWP = OFF                // Boot Flash Write Protect bit (Protection Disabled)
 #pragma config CP = OFF                 // Code Protect (Protection Disabled)
 
+#define bA IOPORT_A
+#define bB IOPORT_B
+#define p15                       (1 << 15)
+#define p14                       (1 << 14)
+#define p13                       (1 << 13)
+#define p12                       (1 << 12)
+#define p11                       (1 << 11)
+#define p10                       (1 << 10)
+#define p9                        (1 << 9)
+#define p8                        (1 << 8)
+#define p7                        (1 << 7)
+#define p6                        (1 << 6)
+#define p5                        (1 << 5)
+#define p4                        (1 << 4)
+#define p3                        (1 << 3)
+#define p2                        (1 << 2)
+#define p1                        (1 << 1)
+#define p0                        (1 << 0)
+
+
 
 
 typedef struct {
@@ -49,8 +89,10 @@ typedef struct {
 #define SYS_FREQ         (40000000L)
 
 #define msElapsed ((ReadCoreTimer()/20000))
+#define dmsElapsed ((ReadCoreTimer()/2000))
+#define usElapsed ((ReadCoreTimer()/20))
 
-#include "timer.h"
+#include "timer.c"
 
 void initPic32() {
     SYSTEMConfig(SYS_FREQ, SYS_CFG_WAIT_STATES | SYS_CFG_PCACHE);
@@ -74,12 +116,23 @@ void initPic32() {
     mEnableIntCoreTimer();*/
 }
 
-uint8_t setOut(Pin pin, uint8_t value) {
+void setOut(Pin pin, uint8_t value) {
     if(value)
         PORTSetBits(pin.port, pin.pin);
     else
         PORTClearBits(pin.port, pin.pin);
 }
+
+void initIn(Pin pin) {
+    PORTSetPinsDigitalIn(pin.port, pin.pin);
+}
+
+void initOut(Pin pin, uint8_t initialValue) {
+    PORTSetPinsDigitalOut(pin.port, pin.pin);
+    setOut(pin, initialValue);
+}
+
+
 
 /*
 void __ISR(_CORE_TIMER_VECTOR, IPL5SOFT) CoreTimerInterruptServiceRoutine(void);
@@ -88,8 +141,8 @@ void CoreTimerInterruptServiceRoutine() {
     INTClearFlag(INT_CT);
     UpdateCoreTimer(40000);
 }*/
-UINT32 excep_code; 
-UINT32 excep_addr; 
+uint32_t excep_code; 
+uint32_t excep_addr; 
 
 void _general_exception_handler (unsigned cause, unsigned status) 
 { 
@@ -101,5 +154,4 @@ void _general_exception_handler (unsigned cause, unsigned status)
    while (1); 
 }  
 
-#endif
 
