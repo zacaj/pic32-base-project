@@ -31,6 +31,7 @@ void timerTick(int i) {
                 case 3: CloseTimer4(); DisableIntT4; break;
                 case 4: CloseTimer5(); DisableIntT5; break;
             }
+            callbacks[i] = NULL;
         }
     }
 }
@@ -60,7 +61,7 @@ uint8_t callIn(uint32_t (*func)(void*), void* d, uint32_t ms) {
         case 4: OpenTimer5(T5_ON | T5_SOURCE_INT | T5_PS_1_256, 156); EnableIntT5; break;
     }    
     
-    return i;
+    return i+1;
 }
 
 void __ISR(_TIMER_1_VECTOR, IPL2SOFT) Timer1Handler(void)

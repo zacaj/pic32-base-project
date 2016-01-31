@@ -4,6 +4,8 @@ Pin select = { IOPORT_A, 0 };
 Pin clock = { IOPORT_B, 14 };
 Pin sdi = { IOPORT_A, 1};
 
+#define LEN(i) if(len<i) return i-len;
+
 /*
  * cmd: array of bytes that make of the command
  * len: number of bytes in cmd, >=1
