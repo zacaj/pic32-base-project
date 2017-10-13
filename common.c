@@ -1,7 +1,7 @@
 #ifndef COMMON_C
 #define COMMON_C
 #include "common.h"
-
+#include "config.c"
 void waitUs(uint32_t us) {
     uint32_t s = usElapsed;
     while(usElapsed-s < us);
@@ -35,11 +35,15 @@ void initPic32() {
     mEnableIntCoreTimer();*/
 }
 
-void setOut(Pin pin, uint8_t value) {
+void setOut(const Pin pin, uint8_t value) {
     if(value)
         PORTSetBits(pin.port, pin.pin);
     else
         PORTClearBits(pin.port, pin.pin);
+}
+
+boolean getIn(const Pin pin) {
+    return PORTReadBits(pin.port, pin.pin)? 1:0;
 }
 
 void initIn(Pin pin) {
@@ -63,8 +67,12 @@ void CoreTimerInterruptServiceRoutine() {
 uint32_t excep_code; 
 uint32_t excep_addr; 
 
+void crashed();
+
 void _general_exception_handler (unsigned cause, unsigned status) 
 { 
+    crashed();
+    
    excep_code = (cause & 0x0000007C) >> 2; 
    excep_addr = __builtin_mfc0(_CP0_EPC, _CP0_EPC_SELECT); 
    if ((cause & 0x80000000) != 0) 

@@ -1,8 +1,9 @@
 #include "../test3.X/common.c"
 
-Pin select = { IOPORT_A, 0 };
-Pin clock = { IOPORT_B, 14 };
-Pin sdi = { IOPORT_A, 1};
+Pin select = { IOPORT_A, p0 };
+Pin clock = { IOPORT_B, p14 };
+Pin sdi = { IOPORT_A, p1};
+Pin led = { IOPORT_B, p15};
 
 #define LEN(i) if(len<i) return i-len;
 
@@ -29,6 +30,8 @@ int main(void)
 {
     initPic32();
     
+    initOut(led, 1);
+    
     PORTSetPinsDigitalIn(IOPORT_A, BIT_0);
     PORTSetPinsDigitalIn(IOPORT_A, BIT_1);
     PORTSetPinsDigitalIn(IOPORT_B, BIT_14);
@@ -51,17 +54,21 @@ int main(void)
     uint8_t lastByteReceived = 0;
     uint8_t cmd[8];
     uint8_t length=0;
-    uint8_t toRead = 1;
+    uint8_t toRead = 0;
     while(1) {
         if(SpiChnTxBuffEmpty(1))
             SpiChnPutC(1, lastByteReceived);
         lastByteReceived = 0;
         
-        while(!SpiChnDataRdy(1))
+        while(!SpiChnDataRdy(1)) {
             loop();
+
+            setOut(led, msElapsed % 200 < 100);
+        }
         uint8_t byte = SpiChnGetC(1);
         cmd[length++] = byte;
-        toRead--;
+        if(toRead)
+            toRead--;
         if(toRead==0)
             toRead = commandReceived(cmd, length);
     }
